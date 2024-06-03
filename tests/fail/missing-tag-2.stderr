@@ -1,0 +1,11 @@
+error: expected identifier
+ --> tests/fail/missing-tag-2.rs:6:3
+  |
+6 | #[test_tag::tag]
+  |   ^^^^^^^^^^^^^
+
+error[E0601]: `main` function not found in crate `$CRATE`
+ --> tests/fail/missing-tag-2.rs:8:21
+  |
+8 | fn cant_compile() {}
+  |                     ^ consider adding a `main` function to `$DIR/tests/fail/missing-tag-2.rs`

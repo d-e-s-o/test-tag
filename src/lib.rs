@@ -8,11 +8,16 @@
 //! indicate that it is suitable for being run under
 //! [Miri](https://github.com/rust-lang/miri):
 //! ```rust,no_run
+//! # // doctests seemingly run in a slightly different environment where
+//! # // `super`, which is what our macro makes use of, is not available.
+//! # // By having a fake module here we work around that problem.
+//! # mod fordoctest {
 //! #[test_tag::tag(miri)]
 //! #[test]
 //! fn test1() {
 //!   assert_eq!(2 + 2, 4);
 //! }
+//! # }
 //! ```
 //!
 //! Subsequently, it is possible to run only those tests under Miri:
@@ -42,6 +47,9 @@ use syn::Error;
 use syn::Ident;
 use syn::ItemFn;
 use syn::Meta;
+use syn::MetaNameValue;
+use syn::PathArguments;
+use syn::PathSegment;
 use syn::Result;
 use syn::Token;
 
@@ -59,11 +67,13 @@ type Tags = Punctuated<Ident, Token![,]>;
 ///
 /// Specify the attribute on a per-test basis:
 /// ```rust,no_run
+/// # mod fordoctest {
 /// #[test_tag::tag(tag1,tag2)]
 /// #[test]
 /// fn test1() {
 ///   assert_eq!(2 + 2, 4);
 /// }
+/// # }
 /// ```
 #[proc_macro_attribute]
 pub fn tag(attrs: TokenStream, item: TokenStream) -> TokenStream {
@@ -77,12 +87,14 @@ pub fn tag(attrs: TokenStream, item: TokenStream) -> TokenStream {
 ///
 /// The input to the function, for the following example:
 /// ```rust,no_run
+/// # mod fordoctest {
 /// #[test_tag::tag(tag1, tag2)]
 /// #[test_tag::tag(tag3)]
 /// #[test]
 /// fn it_works() {
 ///   assert_eq!(2 + 2, 4);
 /// }
+/// # }
 /// ```
 /// would be:
 /// - `attrs`: `tag1, tag2`
@@ -102,8 +114,9 @@ fn try_tag(attrs: TokenStream, item: TokenStream) -> Result<Tokens> {
   // Now also parse the attributes of the annotated function and filter
   // out any additional `test_tag::tag` candidates, parsing their tags
   // in the process.
-  let (more_tags, attrs) = parse_fn_attrs(attrs)?;
+  let (more_tags, mut attrs) = parse_fn_attrs(attrs)?;
   let () = tags.extend(more_tags);
+  let () = rewrite_test_attrs(&mut attrs);
 
   let test_name = sig.ident.clone();
   // Rename the test function to simply `test`. That's less confusing
@@ -130,7 +143,15 @@ fn try_tag(attrs: TokenStream, item: TokenStream) -> Result<Tokens> {
   // Wrap everything in a module named after the test. In so doing we
   // make sure that tags are always surrounded by `::` in the final test
   // name that the testing infrastructure infers.
+  // NB: We need to import the standard prelude here so that some
+  //     `#[test]` attribute is present. That is necessary because we
+  //     rewrite #[test] attributes on tagged functions to
+  //     `#[self::test]` and then rely on *a* `#[test]` attribute being
+  //     in scope. We cannot, however, import `core::prelude::v1::test`
+  //     directly, because that would conflict with potential user
+  //     imports.
   result = quote! {
+    use ::core::prelude::v1::*;
     mod #test_name {
       use super::*;
       #result
@@ -213,6 +234,33 @@ fn is_test_tag_attr(attr: &Attribute) -> bool {
       .iter()
       .zip(segments)
       .all(|(segment, path)| segment.ident == path)
+  }
+}
+
+
+/// Rewrite remaining `#[test]` attributes to use `#[self::test]` syntax.
+///
+/// This conversion is necessary in order to properly support custom `#[test]`
+/// attributes. These attributes are somewhat special and require custom
+/// treatment, because Rust's prelude also contains such an attribute
+/// and we run risk of ambiguities without this rewrite.
+fn rewrite_test_attrs(attrs: &mut [Attribute]) {
+  for attr in attrs.iter_mut() {
+    let span = attr.meta.span();
+    let path = match &mut attr.meta {
+      Meta::Path(path) => path,
+      Meta::List(list) => &mut list.path,
+      Meta::NameValue(MetaNameValue { path, .. }) => path,
+    };
+
+    if path.leading_colon.is_none() && path.segments.len() == 1 && path.segments[0].ident == "test"
+    {
+      let segment = PathSegment {
+        ident: Ident::new("self", span),
+        arguments: PathArguments::None,
+      };
+      let () = path.segments.insert(0, segment);
+    }
   }
 }
 

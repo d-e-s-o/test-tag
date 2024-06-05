@@ -1,0 +1,13 @@
+error: at least one tag is required: #[test_tag::tag(<tags...>)]
+ --> tests/fail/missing-tag-1.rs:5:1
+  |
+5 | #[test_tag::tag]
+  | ^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in the attribute macro `test_tag::tag` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0601]: `main` function not found in crate `$CRATE`
+ --> tests/fail/missing-tag-1.rs:7:21
+  |
+7 | fn cant_compile() {}
+  |                     ^ consider adding a `main` function to `$DIR/tests/fail/missing-tag-1.rs`

@@ -1,0 +1,11 @@
+error: expected `,`
+ --> tests/fail/unsupported-tag-syntax-1.rs:5:22
+  |
+5 | #[test_tag::tag(tag1 = "foobar")]
+  |                      ^
+
+error[E0601]: `main` function not found in crate `$CRATE`
+ --> tests/fail/unsupported-tag-syntax-1.rs:7:21
+  |
+7 | fn cant_compile() {}
+  |                     ^ consider adding a `main` function to `$DIR/tests/fail/unsupported-tag-syntax-1.rs`

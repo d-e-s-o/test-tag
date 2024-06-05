@@ -1,0 +1,11 @@
+error: expected `,`
+ --> tests/fail/invalid-tags.rs:5:20
+  |
+5 | #[test_tag::tag(abc!@*()!@)]
+  |                    ^
+
+error[E0601]: `main` function not found in crate `$CRATE`
+ --> tests/fail/invalid-tags.rs:7:21
+  |
+7 | fn cant_compile() {}
+  |                     ^ consider adding a `main` function to `$DIR/tests/fail/invalid-tags.rs`

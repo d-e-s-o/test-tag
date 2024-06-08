@@ -41,6 +41,49 @@ fn test4() {
 }
 
 
+// Check that macro expansion work with a custom `#[test]` attribute.
+mod namespace1 {
+  use test_log::test;
+
+
+  #[test_tag::tag(tag3)]
+  #[test]
+  #[ignore]
+  fn test5() {}
+}
+
+
+// Check that macro expansion work with a custom `#[test]` attribute for
+// async functions.
+mod namespace2 {
+  use tokio::test;
+
+
+  #[test_tag::tag(tag3)]
+  #[test]
+  #[ignore]
+  async fn test6() {}
+
+
+  #[test_tag::tag(tag3)]
+  #[tokio::test]
+  #[ignore]
+  async fn test7() {}
+}
+
+
+// Check that we can use abbreviated `tag` import as well.
+mod namespace3 {
+  use test_tag::tag;
+
+
+  #[tag(tag3)]
+  #[test]
+  #[ignore]
+  fn test8() {}
+}
+
+
 /// The only default-runnable test. It recursively invokes the binary to
 /// check that ignored tests have the expected set of tags.
 #[test]
@@ -67,6 +110,10 @@ fn main() {
     let tests = run_tests(&[":tag3:"]).unwrap();
     let expected = hashset! {
       "test3::tag1::tag3::test".to_string(),
+      "namespace1::test5::tag3::test".to_string(),
+      "namespace2::test6::tag3::test".to_string(),
+      "namespace2::test7::tag3::test".to_string(),
+      "namespace3::test8::tag3::test".to_string(),
     };
     assert_eq!(tests, expected);
   }

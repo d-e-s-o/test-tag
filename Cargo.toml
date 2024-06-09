@@ -1,10 +1,28 @@
 [package]
 name = "test-tag"
-version = "0.0.0"
+version = "0.1.0"
 authors = ["Daniel Mueller <deso@posteo.net>"]
 edition = "2021"
 license = "Apache-2.0 OR MIT"
+homepage = "https://github.com/d-e-s-o/test-tag"
+repository = "https://github.com/d-e-s-o/test-tag.git"
 readme = "README.md"
+categories = [
+  "development-tools::testing",
+  "development-tools",
+  "config",
+]
+keywords = [
+  "tag",
+  "tagging",
+  "test",
+  "testing",
+  "tests",
+]
+description = """
+A replacement of the #[test] attribute that initializes logging and/or
+tracing infrastructure before running tests.
+"""
 autotests = false
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html

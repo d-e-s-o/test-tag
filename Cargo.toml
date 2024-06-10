@@ -20,8 +20,7 @@ keywords = [
   "tests",
 ]
 description = """
-A replacement of the #[test] attribute that initializes logging and/or
-tracing infrastructure before running tests.
+The #[tag] attribute for convenient tagging/grouping of #[test] tests.
 """
 autotests = false
 

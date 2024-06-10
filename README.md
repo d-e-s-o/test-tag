@@ -6,6 +6,7 @@ test-tag
 ========
 
 - [Documentation][docs-rs]
+- [Changelog](CHANGELOG.md)
 
 **test-tag** is a crate that that can be used for tagging tests. Users
 are then able to execute only tests matching certain tags.

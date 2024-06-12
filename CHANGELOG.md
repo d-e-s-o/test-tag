@@ -1,5 +1,5 @@
-Unreleased
-----------
+0.1.1
+-----
 - Fixed crate description in Cargo manifest
 
 

@@ -80,5 +80,5 @@ $ cargo test -- :tag1: :tag2:
 The above will be interpreted as "run all tests that have `:tag1:` *or*
 `:tag2:` (or both)".
 
-[docs-rs]: https://docs.rs/test-log/latest/test_tag/
+[docs-rs]: https://docs.rs/test-tag/latest/test_tag/
 [miri]: https://github.com/rust-lang/miri

@@ -12,7 +12,9 @@
 //! # // `super`, which is what our macro makes use of, is not available.
 //! # // By having a fake module here we work around that problem.
 //! # mod fordoctest {
-//! #[test_tag::tag(miri)]
+//! use test_tag::tag;
+//!
+//! #[tag(miri)]
 //! #[test]
 //! fn test1() {
 //!   assert_eq!(2 + 2, 4);
@@ -68,7 +70,9 @@ type Tags = Punctuated<Ident, Token![,]>;
 /// Specify the attribute on a per-test basis:
 /// ```rust,no_run
 /// # mod fordoctest {
-/// #[test_tag::tag(tag1,tag2)]
+/// use test_tag::tag;
+///
+/// #[tag(tag1, tag2)]
 /// #[test]
 /// fn test1() {
 ///   assert_eq!(2 + 2, 4);
@@ -88,8 +92,10 @@ pub fn tag(attrs: TokenStream, item: TokenStream) -> TokenStream {
 /// The input to the function, for the following example:
 /// ```rust,no_run
 /// # mod fordoctest {
-/// #[test_tag::tag(tag1, tag2)]
-/// #[test_tag::tag(tag3)]
+/// use test_tag::tag;
+///
+/// #[tag(tag1, tag2)]
+/// #[tag(tag3)]
 /// #[test]
 /// fn it_works() {
 ///   assert_eq!(2 + 2, 4);
@@ -98,7 +104,7 @@ pub fn tag(attrs: TokenStream, item: TokenStream) -> TokenStream {
 /// ```
 /// would be:
 /// - `attrs`: `tag1, tag2`
-/// - `item`: `#[test_tag::tag(tag3)] #[test] fn it_works() { assert_eq!(2 + 2, 4); }`
+/// - `item`: `#[tag(tag3)] #[test] fn it_works() { assert_eq!(2 + 2, 4); }`
 fn try_tag(attrs: TokenStream, item: TokenStream) -> Result<Tokens> {
   // Parse the list of tags directly provided to *this* macro
   // instantiation.

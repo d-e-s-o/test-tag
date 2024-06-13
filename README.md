@@ -36,7 +36,9 @@ Usage
 This crate provides the `#[test_tag::tag(...)]` attribute that
 introduces the means for first class tagging. For the `Miri` example:
 ```rust
-#[test_tag::tag(miri)]
+use test_tag::tag;
+
+#[tag(miri)]
 #[test]
 fn test1() {}
 ```
@@ -57,14 +59,16 @@ $ cargo test -- --skip :miri:
 One can provide a list of tags, either in comma separated form or by
 providing the attribute multiple times:
 ```rust
-#[test_tag::tag(tag1, tag2)]
+use test_tag::tag;
+
+#[tag(tag1, tag2)]
 #[test]
 fn test1() {}
 
 // The above is equivalent to:
 
-#[test_tag::tag(tag1)]
-#[test_tag::tag(tag2)]
+#[tag(tag1)]
+#[tag(tag2)]
 #[test]
 fn test1() {}
 ```

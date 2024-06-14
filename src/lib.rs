@@ -27,6 +27,13 @@
 //! $ cargo miri test -- :miri:
 //! ```
 //!
+//! Please note that the usage of Miri is just an example (if the
+//! majority of tests is Miri-compatible you can use `#[cfg_attr(miri,
+//! ignore)]` instead and may not require a custom attribute). However,
+//! tagging can be useful for other properties, such as certain tests
+//! requiring alleviated rights (need to be run with administrator
+//! privileges).
+//!
 //! This crate provides the #[test_tag::[macro@tag]] attribute that allows for
 //! such tagging to happen.
 

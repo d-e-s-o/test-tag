@@ -31,6 +31,12 @@ is entirely possible that a contributor accidentally renames a test
 rendering it no longer eligible to be run. It also quickly gets
 convoluted once more than one property is "special".
 
+Please note that the usage of Miri is just an example (if the majority
+of tests is Miri-compatible you can use `#[cfg_attr(miri, ignore)]` as
+an opt-out alternative). However, tagging can be useful for other
+properties, such as certain tests requiring alleviated rights (need to
+be run with administrator privileges).
+
 Usage
 -----
 This crate provides the `#[test_tag::tag(...)]` attribute that

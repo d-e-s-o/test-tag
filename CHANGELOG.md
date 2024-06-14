@@ -1,5 +1,5 @@
-Unreleased
-----------
+0.1.2
+-----
 - Updated crate documentation
 
 

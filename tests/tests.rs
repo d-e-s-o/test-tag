@@ -20,7 +20,10 @@ fn test1() {}
 #[test_tag::tag(tag1, tag2)]
 #[test]
 #[ignore]
-fn test2() {}
+fn test2() {
+  // Make sure that we can reference another test.
+  let () = test1();
+}
 
 
 #[rustfmt::skip]
@@ -29,7 +32,8 @@ fn test2() {}
 #[test]
 #[ignore]
 fn test3() {
-    some_impl()
+  // Make sure that we can reference an ordinarily accessible function.
+  let () = some_impl();
 }
 
 

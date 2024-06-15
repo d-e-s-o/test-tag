@@ -7,11 +7,7 @@
 //! For example, a test can be associated with the tag `miri`, to
 //! indicate that it is suitable for being run under
 //! [Miri](https://github.com/rust-lang/miri):
-//! ```rust,no_run
-//! # // doctests seemingly run in a slightly different environment where
-//! # // `super`, which is what our macro makes use of, is not available.
-//! # // By having a fake module here we work around that problem.
-//! # mod fordoctest {
+//! ```rust,ignore
 //! use test_tag::tag;
 //!
 //! #[tag(miri)]
@@ -19,7 +15,6 @@
 //! fn test1() {
 //!   assert_eq!(2 + 2, 4);
 //! }
-//! # }
 //! ```
 //!
 //! Subsequently, it is possible to run only those tests under Miri:
@@ -75,8 +70,7 @@ type Tags = Punctuated<Ident, Token![,]>;
 /// # Example
 ///
 /// Specify the attribute on a per-test basis:
-/// ```rust,no_run
-/// # mod fordoctest {
+/// ```rust,ignore
 /// use test_tag::tag;
 ///
 /// #[tag(tag1, tag2)]
@@ -84,7 +78,6 @@ type Tags = Punctuated<Ident, Token![,]>;
 /// fn test1() {
 ///   assert_eq!(2 + 2, 4);
 /// }
-/// # }
 /// ```
 #[proc_macro_attribute]
 pub fn tag(attrs: TokenStream, item: TokenStream) -> TokenStream {
@@ -97,8 +90,7 @@ pub fn tag(attrs: TokenStream, item: TokenStream) -> TokenStream {
 /// Handle the `#[test_tag::tag]` attribute.
 ///
 /// The input to the function, for the following example:
-/// ```rust,no_run
-/// # mod fordoctest {
+/// ```rust,ignore
 /// use test_tag::tag;
 ///
 /// #[tag(tag1, tag2)]
@@ -107,7 +99,6 @@ pub fn tag(attrs: TokenStream, item: TokenStream) -> TokenStream {
 /// fn it_works() {
 ///   assert_eq!(2 + 2, 4);
 /// }
-/// # }
 /// ```
 /// would be:
 /// - `attrs`: `tag1, tag2`
@@ -139,14 +130,21 @@ fn try_tag(attrs: TokenStream, item: TokenStream) -> Result<Tokens> {
 
   let mut result = quote! {
     #(#attrs)*
-    #vis #sig {
+    pub #sig {
       #block
     }
   };
 
+  let mut import = None;
   for tag in tags.into_iter().rev() {
+    import = if let Some(import) = &import {
+      Some(quote! { #tag::#import })
+    } else {
+      Some(quote! { #tag })
+    };
+
     result = quote! {
-      mod #tag {
+      pub mod #tag {
         use super::*;
         #result
       }
@@ -165,7 +163,10 @@ fn try_tag(attrs: TokenStream, item: TokenStream) -> Result<Tokens> {
   //     imports.
   result = quote! {
     use ::core::prelude::v1::*;
-    mod #test_name {
+    #[allow(unused_imports)]
+    #vis use #test_name::#import::test as #test_name;
+    #[doc(hidden)]
+    pub mod #test_name {
       use super::*;
       #result
     }

@@ -1,3 +1,9 @@
+Unreleased
+----------
+- Added generation of top-level import of original test function to
+  support cross-test references
+
+
 0.1.2
 -----
 - Updated crate documentation

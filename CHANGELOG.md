@@ -1,5 +1,5 @@
-Unreleased
-----------
+0.1.4
+-----
 - Added additional use case to README
 
 

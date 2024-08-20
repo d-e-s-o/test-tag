@@ -1,3 +1,8 @@
+Unreleased
+----------
+- Added additional use case to README
+
+
 0.1.3
 -----
 - Added generation of top-level import of original test function to

@@ -35,7 +35,9 @@ Please note that the usage of Miri is just an example (if the majority
 of tests is Miri-compatible you can use `#[cfg_attr(miri, ignore)]` as
 an opt-out alternative). However, tagging can be useful for other
 properties, such as certain tests requiring alleviated rights (need to
-be run with administrator privileges).
+be run with administrator privileges) or those being eligible for
+running on a partly supported (perhaps to-be-onboarded) operating
+system.
 
 Usage
 -----

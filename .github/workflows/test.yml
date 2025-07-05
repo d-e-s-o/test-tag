@@ -1,4 +1,4 @@
-# Copyright (C) 2024 Daniel Mueller <deso@posteo.net>
+# Copyright (C) 2024-2025 Daniel Mueller <deso@posteo.net>
 # SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
 name: Test
@@ -68,4 +68,4 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@nightly
-      - run: cargo doc --workspace --no-deps
+      - run: cargo doc --workspace --no-deps --document-private-items

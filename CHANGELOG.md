@@ -1,3 +1,8 @@
+Unreleased
+----------
+- Suppressed potential warnings about ambiguous panic macro import
+
+
 0.1.4
 -----
 - Added additional use case to README

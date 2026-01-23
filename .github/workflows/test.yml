@@ -17,7 +17,7 @@ env:
   # arrangement. See
   # https://doc.rust-lang.org/cargo/reference/environment-variables.html
   # https://doc.rust-lang.org/rustc/codegen-options/index.html#debuginfo
-  RUSTFLAGS: '-C debuginfo=0'
+  RUSTFLAGS: '-D warnings -C debuginfo=0'
 
 jobs:
   build:

@@ -1,4 +1,4 @@
-// Copyright (C) 2024 Daniel Mueller <deso@posteo.net>
+// Copyright (C) 2024-2026 Daniel Mueller <deso@posteo.net>
 // SPDX-License-Identifier: (Apache-2.0 OR MIT)
 
 //! Tagging functionality for tests, allowing for convenient grouping and later
@@ -136,7 +136,7 @@ fn try_tag(attrs: TokenStream, item: TokenStream) -> Result<Tokens> {
   };
 
   let mut import = None;
-  for tag in tags.into_iter().rev() {
+  for tag in tags.iter().rev() {
     import = if let Some(import) = &import {
       Some(quote! { #tag::#import })
     } else {
@@ -151,6 +151,14 @@ fn try_tag(attrs: TokenStream, item: TokenStream) -> Result<Tokens> {
     };
   }
 
+  let tags_slug = tags
+    .iter()
+    .fold(String::new(), |s, tag| format!("{s}_{tag}"));
+  let panic_export = Ident::new(
+    &format!("_test_tag_{test_name}_{tags_slug}_panic"),
+    sig.ident.span(),
+  );
+
   // Wrap everything in a module named after the test. In so doing we
   // make sure that tags are always surrounded by `::` in the final test
   // name that the testing infrastructure infers.
@@ -162,7 +170,7 @@ fn try_tag(attrs: TokenStream, item: TokenStream) -> Result<Tokens> {
   //     directly, because that would conflict with potential user
   //     imports.
   result = quote! {
-    use ::core::prelude::v1::*;
+    use ::core::prelude::v1::{panic as #panic_export, *};
     #[allow(unused_imports)]
     #vis use #test_name::#import::test as #test_name;
     #[doc(hidden)]

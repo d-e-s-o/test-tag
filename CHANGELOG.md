@@ -1,5 +1,5 @@
-Unreleased
-----------
+0.1.6
+-----
 - Switched to relying on `std` prelude to prevent ambiguous macro
   warnings
 

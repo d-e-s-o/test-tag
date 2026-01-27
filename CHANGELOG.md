@@ -1,5 +1,5 @@
-Unreleased
-----------
+0.1.5
+-----
 - Suppressed potential warnings about ambiguous panic macro import
 
 

@@ -161,14 +161,11 @@ fn try_tag(attrs: TokenStream, item: TokenStream) -> Result<Tokens> {
   //     in scope. We cannot, however, import `core::prelude::v1::test`
   //     directly, because that would conflict with potential user
   //     imports.
-  // TODO: We need to find an alternative solution to allowing the
-  //       `ambiguous_panic_imports` lint here.
   result = quote! {
-    use ::core::prelude::v1::*;
+    use ::std::prelude::v1::*;
     #[allow(unused_imports)]
     #vis use #test_name::#import::test as #test_name;
     #[doc(hidden)]
-    #[allow(ambiguous_panic_imports)]
     pub mod #test_name {
       use super::*;
       #result

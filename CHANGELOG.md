@@ -1,3 +1,9 @@
+Unreleased
+----------
+- Switched to relying on `std` prelude to prevent ambiguous macro
+  warnings
+
+
 0.1.5
 -----
 - Suppressed potential warnings about ambiguous panic macro import
